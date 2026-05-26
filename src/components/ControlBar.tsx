@@ -1,4 +1,9 @@
-import { ArrowCounterClockwiseIcon, PauseIcon, PlayIcon } from "@phosphor-icons/react";
+import {
+  ArrowCounterClockwiseIcon,
+  GraduationCapIcon,
+  PauseIcon,
+  PlayIcon,
+} from "@phosphor-icons/react";
 import { Slider } from "radix-ui";
 
 import ProgressBar from "@/components/ProgressBar";
@@ -13,6 +18,7 @@ interface ControlBarProps {
   running: boolean;
   onToggleRunning: () => void;
   onReset: () => void;
+  onQuiz?: () => void;
 }
 
 export default function ControlBar({
@@ -22,6 +28,7 @@ export default function ControlBar({
   running,
   onToggleRunning,
   onReset,
+  onQuiz,
 }: ControlBarProps) {
   return (
     <div className="group fixed inset-x-0 bottom-0 pb-4 pt-8">
@@ -66,6 +73,15 @@ export default function ControlBar({
           >
             <ArrowCounterClockwiseIcon weight="bold" size={20} />
           </button>
+
+          {onQuiz && (
+            <button
+              onClick={onQuiz}
+              className="flex size-10 items-center justify-center rounded-lg bg-bg-surface text-sub transition-colors hover:bg-accent hover:text-bg"
+            >
+              <GraduationCapIcon weight="bold" size={20} />
+            </button>
+          )}
         </div>
       </div>
     </div>

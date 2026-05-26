@@ -7,6 +7,7 @@ import "./index.css";
 import Layout from "@/components/Layout";
 import { ArticleProvider } from "@/contexts/ArticleContext";
 import IndexPage from "@/pages/IndexPage";
+import QAPage from "@/pages/QAPage";
 import ReadPage from "@/pages/ReadPage";
 
 createRoot(document.getElementById("root")!).render(
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route path="/" element={<IndexPage />} />
             <Route path="/read" element={<ReadPage />} />
+            <Route path="/qa" element={<QAPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>

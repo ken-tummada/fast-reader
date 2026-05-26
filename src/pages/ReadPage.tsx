@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 
 import ControlBar from "@/components/ControlBar";
 import TextDisplay from "@/components/TextDisplay";
@@ -11,6 +12,7 @@ function wpmToMs(wpm: number) {
 }
 
 export default function ReadPage() {
+  const navigate = useNavigate();
   const { paragraphs: rawParagraphs } = useArticle();
 
   const paragraphs = useMemo(
@@ -100,6 +102,7 @@ export default function ReadPage() {
         running={running}
         onToggleRunning={toggleRunning}
         onReset={handleReset}
+        onQuiz={() => navigate("/qa")}
       />
     </>
   );
