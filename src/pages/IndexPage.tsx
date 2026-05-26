@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { Slider } from "radix-ui";
 
 import { sampleText } from "@/utils/sampleText";
 
-const HIGHLIGHT_COLOR = "text-blue-500";
 const DEFAULT_WPM = 300;
-const MIN_WPM = 60;
+const MIN_WPM = 150;
 const MAX_WPM = 1000;
 
 function wpmToMs(wpm: number) {
@@ -15,13 +14,16 @@ function wpmToMs(wpm: number) {
 }
 
 export default function IndexPage() {
-  const words = sampleText.flatMap((paragraph) =>
-    paragraph.split(/\s+|(?<=[.,])/).filter((w) => !!w)
+  const paragraphs = useMemo(
+    () => sampleText.map((p) => p.split(/\s+|(?<=[.,])/).filter(Boolean)),
+    []
   );
+
+  const totalWords = useMemo(() => paragraphs.reduce((sum, p) => sum + p.length, 0), [paragraphs]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [wpm, setWpm] = useState(DEFAULT_WPM);
-  const [running, setRunning] = useState(true);
+  const [running, setRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const clearTimer = useCallback(() => {
@@ -35,73 +37,111 @@ export default function IndexPage() {
     clearTimer();
     if (running) {
       intervalRef.current = setInterval(() => {
-        setActiveIndex((prev) => (prev + 1) % words.length);
+        setActiveIndex((prev) => (prev + 1) % totalWords);
       }, wpmToMs(wpm));
     }
     return clearTimer;
-  }, [running, wpm, words.length, clearTimer]);
+  }, [running, wpm, totalWords, clearTimer]);
 
   const handleReset = () => {
     setActiveIndex(0);
     setRunning(false);
   };
 
-  const [wordOffset, setWordOffset] = useState(0);
+  const toggleRunning = () => setRunning((r) => !r);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        toggleRunning();
+      } else if (e.code === "KeyR") {
+        handleReset();
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  });
+
+  const progress = totalWords > 0 ? ((activeIndex + 1) / totalWords) * 100 : 0;
+
+  let wordCounter = 0;
 
   return (
-    <div className="relative">
-      <div className="fixed top-4 right-4 flex flex-col gap-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-lg dark:border-neutral-700 dark:bg-neutral-900">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium tabular-nums">{wpm} WPM</span>
-        </div>
-
-        <Slider.Root
-          className="relative flex h-5 w-48 touch-none items-center select-none"
-          value={[wpm]}
-          onValueChange={([v]) => setWpm(v)}
-          min={MIN_WPM}
-          max={MAX_WPM}
-          step={10}
-        >
-          <Slider.Track className="relative h-1 grow rounded-full bg-neutral-200 dark:bg-neutral-700">
-            <Slider.Range className="absolute h-full rounded-full bg-blue-500" />
-          </Slider.Track>
-          <Slider.Thumb className="block size-4 rounded-full bg-blue-500 shadow focus:outline-none" />
-        </Slider.Root>
-
-        <div className="flex gap-2">
-          <button
-            onClick={() => setRunning((r) => !r)}
-            className="flex items-center gap-1 rounded bg-blue-500 px-3 py-1.5 text-sm text-white hover:bg-blue-600"
-          >
-            {running ? <Pause weight="bold" size={16} /> : <Play weight="bold" size={16} />}
-            {running ? "Stop" : "Start"}
-          </button>
-          <button
-            onClick={handleReset}
-            className="flex items-center gap-1 rounded border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-100 dark:border-neutral-600 dark:hover:bg-neutral-800"
-          >
-            <ArrowCounterClockwise weight="bold" size={16} />
-            Reset
-          </button>
-        </div>
+    <>
+      {/* Text display */}
+      <div className="w-full pb-28 leading-relaxed" style={{ fontSize: "var(--text-body)" }}>
+        {paragraphs.map((words, pIdx) => {
+          const paragraphEl = (
+            <p key={pIdx} className="mb-4">
+              {words.map((word, wIdx) => {
+                const globalIdx = wordCounter++;
+                const isActive = globalIdx === activeIndex;
+                return (
+                  <span key={wIdx} className={isActive ? "text-accent" : "text-sub"}>
+                    {word}{" "}
+                  </span>
+                );
+              })}
+            </p>
+          );
+          return paragraphEl;
+        })}
       </div>
 
-      {sampleText.map((e, i) => {
-        const paragraphWords = e.split(/\s+|(?<=[.,])/).filter((w) => !!w);
-        const startOffset = wordOffset;
-        setWordOffset(wordOffset + paragraphWords.length);
+      {/* Fixed bottom hover zone — always interactive so mouse can reveal controls */}
+      <div className="group fixed inset-x-0 bottom-0 pb-4 pt-8">
+        <div
+          className={`flex flex-col items-center gap-3 bg-bg/80 px-6 py-4 backdrop-blur-sm transition-all duration-300 ease-out ${running ? "translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100" : ""}`}
+        >
+          {/* Progress bar */}
+          <div className="h-1 w-full max-w-3xl overflow-hidden rounded-full bg-bg-surface">
+            <div
+              className="h-full rounded-full bg-accent transition-all duration-150 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
 
-        return (
-          <p key={i}>
-            {paragraphWords.map((word, j) => (
-              <span key={j} className={startOffset + j === activeIndex ? HIGHLIGHT_COLOR : ""}>
-                {word}{" "}
+          {/* Controls */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <span className="text-sub tabular-nums" style={{ fontSize: "var(--text-label)" }}>
+                {wpm}
               </span>
-            ))}
-          </p>
-        );
-      })}
-    </div>
+              <Slider.Root
+                className="relative flex h-5 w-40 touch-none items-center select-none"
+                value={[wpm]}
+                onValueChange={([v]) => setWpm(v)}
+                min={MIN_WPM}
+                max={MAX_WPM}
+                step={10}
+              >
+                <Slider.Track className="relative h-1 grow rounded-full bg-bg-surface">
+                  <Slider.Range className="absolute h-full rounded-full bg-sub" />
+                </Slider.Track>
+                <Slider.Thumb className="block size-4 cursor-pointer rounded-full bg-text transition-colors hover:bg-accent focus:outline-none" />
+              </Slider.Root>
+              <span className="text-sub" style={{ fontSize: "var(--text-hint)" }}>
+                wpm
+              </span>
+            </div>
+
+            <button
+              onClick={toggleRunning}
+              className="flex size-10 items-center justify-center rounded-lg bg-bg-surface text-sub transition-colors hover:bg-accent hover:text-bg"
+            >
+              {running ? <Pause weight="bold" size={20} /> : <Play weight="bold" size={20} />}
+            </button>
+
+            <button
+              onClick={handleReset}
+              className="flex size-10 items-center justify-center rounded-lg bg-bg-surface text-sub transition-colors hover:bg-error hover:text-bg"
+            >
+              <ArrowCounterClockwise weight="bold" size={20} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

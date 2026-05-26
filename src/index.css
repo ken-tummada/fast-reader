@@ -1,1 +1,57 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+/* ─── Theme Tokens ─── */
+
+@theme {
+  --color-bg: #2c2e31;
+  --color-bg-surface: #2c2e31;
+  --color-primary: #2563EB;
+  --color-secondary: #2563EB;
+  --color-sub: #D6D6D6;
+  --color-accent: #AFF52D;
+  --color-error: #ca4754;
+
+  --font-mono: "Inter", sans-serif;
+
+  --text-body: 1.25rem;
+  --text-label: 0.875rem;
+  --text-header: 0.875rem;
+  --text-hint: 0.75rem;
+}
+
+/* ─── Base Styles ─── */
+
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100dvh;
+  margin: 0;
+}
+
+::selection {
+  background-color: color-mix(in oklch, var(--color-accent) 20%, transparent);
+  color: var(--color-accent);
+}
+
+/* ─── Animations ─── */
+
+@keyframes word-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-word-enter {
+  animation: word-enter 150ms ease-out;
+}
