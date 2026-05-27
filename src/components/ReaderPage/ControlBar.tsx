@@ -8,7 +8,7 @@ import {
 } from "@phosphor-icons/react";
 
 import ProgressBar from "@/components/ui/ProgressBar";
-import { Button } from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import Slider from "@/components/ui/Slider";
 
 const MIN_WPM = 200;

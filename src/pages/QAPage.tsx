@@ -12,8 +12,8 @@ import { useArticle } from "@/hooks/useArticle";
 import { generateQuestions } from "@/utils/generateQuestions";
 import type { Question } from "@/utils/generateQuestions";
 
-import { Button } from "@/components/ui/Button";
-import { NumberPicker } from "@/components/ui/NumberPicker";
+import Button from "@/components/ui/Button";
+import NumberPicker from "@/components/ui/NumberPicker";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
