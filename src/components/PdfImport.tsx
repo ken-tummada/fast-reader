@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent } from "react";
 import { useNavigate } from "react-router";
-import { FilePdfIcon, SpinnerGapIcon, UploadSimpleIcon } from "@phosphor-icons/react";
+import { FilePdfIcon, SpinnerGapIcon } from "@phosphor-icons/react";
 
 import { useArticle } from "@/hooks/useArticle";
 import { extractPdfText } from "@/utils/extractPdf";
@@ -70,7 +70,9 @@ export default function PdfImport() {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       className={`flex w-full max-w-md cursor-pointer flex-col items-center gap-4 rounded-lg border-2 border-dashed px-8 py-12 transition-colors ${
-        dragOver ? "border-accent bg-accent/5" : "border-sub/40 hover:border-sub"
+        dragOver
+          ? "border-primary-foreground bg-primary-foreground/5"
+          : "border-foreground hover:border-primary-foreground hover:bg-primary-foreground/5"
       }`}
     >
       <input
@@ -90,7 +92,6 @@ export default function PdfImport() {
         <>
           <div className="flex items-center gap-2 text-sub">
             <FilePdfIcon size={48} />
-            <UploadSimpleIcon size={32} />
           </div>
           <p className="text-sub text-center">Drop a PDF here or click to select</p>
           {status === "error" && <p className="text-center text-sm text-red-400">{errorMsg}</p>}

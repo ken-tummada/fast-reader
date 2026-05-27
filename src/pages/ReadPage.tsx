@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 
-import ControlBar from "@/components/ControlBar";
+import ControlBar from "@/components/ReaderPage/ControlBar";
 import TextDisplay from "@/components/TextDisplay";
 import { useArticle } from "@/hooks/useArticle";
 

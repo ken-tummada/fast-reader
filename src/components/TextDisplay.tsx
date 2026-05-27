@@ -38,7 +38,11 @@ export default function TextDisplay({ paragraphs, activeIndex }: TextDisplayProp
                 <span
                   key={wIdx}
                   className={
-                    isEquation ? "text-sub/60 italic" : isActive ? "text-accent" : "text-sub"
+                    isEquation
+                      ? "text-sub/60 italic"
+                      : isActive
+                        ? "text-primary-foreground"
+                        : "text-sub"
                   }
                 >
                   {isEquation ? getMathContent(word) || "[equation]" : word}{" "}

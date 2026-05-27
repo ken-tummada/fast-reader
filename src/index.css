@@ -3,13 +3,31 @@
 /* ─── Theme Tokens ─── */
 
 @theme {
-  --color-bg: #2c2e31;
-  --color-bg-surface: #2c2e31;
-  --color-primary: #2563EB;
-  --color-secondary: #2563EB;
-  --color-sub: #D6D6D6;
-  --color-accent: #AFF52D;
-  --color-error: #ca4754;
+  --primary-50: #f7feea;
+  --primary-100: #effdd5;
+  --primary-200: #dffbab;
+  --primary-300: #cff981;
+  --primary-400: #bff757;
+  --primary-500: #AFF52D;
+  --primary-600: #8cc424;
+  --primary-700: #69931b;
+  --primary-800: #466212;
+  --primary-900: #233109;
+
+  --color-background: var(--color-gray-800);
+  --color-foreground: var(--color-gray-300);
+
+  --color-primary: var(--primary-200);
+  --color-primary-foreground: var(--primary-500);
+
+  --color-muted: var(--color-gray-700);
+  --color-muted-foreground: var(--color-gray-200);
+  
+  --color-success: var(--color-green-200);
+  --color-success-foreground: var(--color-green-700);
+
+  --color-error: var(--color-red-200);
+  --color-error-foreground: var(--color-red-700);
 
   --font-mono: "Inter", sans-serif;
 
@@ -22,8 +40,8 @@
 /* ─── Base Styles ─── */
 
 html {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -35,8 +53,8 @@ body {
 }
 
 ::selection {
-  background-color: color-mix(in oklch, var(--color-accent) 20%, transparent);
-  color: var(--color-accent);
+  background-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
+  color: var(--color-primary-foreground);
 }
 
 /* ─── Animations ─── */
