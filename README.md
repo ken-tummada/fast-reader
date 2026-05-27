@@ -19,8 +19,6 @@ pnpm dev
 
 Install additional dependencies
 
-TODO: rethink this documentation
-
 ```bash
 pnpm install @langchain/<your-provider>
 ```
