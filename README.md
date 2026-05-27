@@ -22,6 +22,7 @@ Install additional dependencies
 ```bash
 pnpm install @langchain/<your-provider>
 ```
+List of providers can be found [here](https://docs.langchain.com/oss/javascript/langchain/models#initialize-a-model).
 
 Create a `.env` file from `.env.example` and fill it out.
 
