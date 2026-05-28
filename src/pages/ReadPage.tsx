@@ -45,6 +45,7 @@ export default function ReadPage() {
   const [wpm, setWpm] = useState(DEFAULT_WPM);
   const [running, setRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const scrollPausedRef = useRef(false);
   const [prevParagraphs, setPrevParagraphs] = useState(rawParagraphs);
 
   if (prevParagraphs !== rawParagraphs) {
@@ -64,7 +65,9 @@ export default function ReadPage() {
     clearTimer();
     if (running) {
       intervalRef.current = setInterval(() => {
-        setActiveIndex((prev) => (prev + 1) % totalWords);
+        if (!scrollPausedRef.current) {
+          setActiveIndex((prev) => (prev + 1) % totalWords);
+        }
       }, wpmToMs(wpm));
     }
     return clearTimer;
@@ -76,6 +79,22 @@ export default function ReadPage() {
   };
 
   const toggleRunning = () => setRunning((r) => !r);
+
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const handleScroll = () => {
+      scrollPausedRef.current = true;
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        scrollPausedRef.current = false;
+      }, 150);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
