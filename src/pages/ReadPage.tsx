@@ -3,6 +3,8 @@ import { useNavigate } from "react-router";
 
 import ControlBar from "@/components/ReaderPage/ControlBar";
 import TextDisplay from "@/components/TextDisplay";
+import StatusBar from "@/components/ReaderPage/StatusBar";
+
 import { useArticle } from "@/hooks/useArticle";
 
 const DEFAULT_WPM = 300;
@@ -45,8 +47,10 @@ export default function ReadPage() {
   const [wpm, setWpm] = useState(DEFAULT_WPM);
   const [running, setRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const stopwatchRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const scrollPausedRef = useRef(false);
   const [prevParagraphs, setPrevParagraphs] = useState(rawParagraphs);
+  const [elaspedTime, setElaspedTime] = useState(0);
 
   if (prevParagraphs !== rawParagraphs) {
     setPrevParagraphs(rawParagraphs);
@@ -60,6 +64,22 @@ export default function ReadPage() {
       intervalRef.current = null;
     }
   }, []);
+
+  const clearStopwatch = useCallback(() => {
+    if (stopwatchRef.current) {
+      clearInterval(stopwatchRef.current);
+      stopwatchRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (running) {
+      stopwatchRef.current = setInterval(() => {
+        setElaspedTime((prev) => prev + 1);
+      }, 1000);
+    } else clearStopwatch();
+    return clearStopwatch;
+  }, [running, clearStopwatch]);
 
   useEffect(() => {
     clearTimer();
@@ -76,9 +96,12 @@ export default function ReadPage() {
   const handleReset = () => {
     setActiveIndex(0);
     setRunning(false);
+    setElaspedTime(0);
   };
 
-  const toggleRunning = () => setRunning((r) => !r);
+  const toggleRunning = () => {
+    setRunning((r) => !r);
+  };
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -101,8 +124,6 @@ export default function ReadPage() {
       if (e.code === "Space") {
         e.preventDefault();
         toggleRunning();
-      } else if (e.code === "KeyR") {
-        handleReset();
       }
     };
     window.addEventListener("keydown", handleKey);
@@ -112,10 +133,12 @@ export default function ReadPage() {
   const progress = totalWords > 0 ? ((activeIndex + 1) / totalWords) * 100 : 0;
 
   return (
-    <>
+    <div className="relative">
+      <div className="sticky top-4 w-full bg-muted/90 rounded-lg">
+        <StatusBar progress={progress} elaspedSeconds={elaspedTime} />
+      </div>
       <TextDisplay paragraphs={paragraphs} activeIndex={activeIndex} />
       <ControlBar
-        progress={progress}
         wpm={wpm}
         onWpmChange={setWpm}
         running={running}
@@ -123,6 +146,6 @@ export default function ReadPage() {
         onReset={handleReset}
         onQuiz={() => navigate("/qa")}
       />
-    </>
+    </div>
   );
 }

@@ -7,7 +7,6 @@ import {
   XIcon,
 } from "@phosphor-icons/react";
 
-import ProgressBar from "@/components/ui/ProgressBar";
 import Button from "@/components/ui/Button";
 import Slider from "@/components/ui/Slider";
 
@@ -16,7 +15,6 @@ const MAX_WPM = 600;
 const INTV_WPM = 50;
 
 interface ControlBarProps {
-  progress: number;
   wpm: number;
   onWpmChange: (value: number) => void;
   running: boolean;
@@ -26,7 +24,6 @@ interface ControlBarProps {
 }
 
 export default function ControlBar({
-  progress,
   wpm,
   onWpmChange,
   running,
@@ -38,16 +35,15 @@ export default function ControlBar({
   return (
     <div className="group max-w-[70ch] fixed inset-x-0 left-1/2 -translate-x-1/2 bottom-0 pb-4 pt-8">
       <div
-        className={`flex flex-col items-center gap-3 bg-muted/60 rounded-lg px-6 py-4 backdrop-blur-sm transition-all duration-300 ease-out ${running ? "translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100" : ""}`}
+        className={`bg-muted/60 rounded-lg px-6 py-4 backdrop-blur-sm transition-all duration-300 ease-out ${running ? "translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100" : ""}`}
       >
-        <ProgressBar progress={progress} />
-
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between">
+          <div>
             <Button variant={"destructive"} size={"icon"} onClick={() => navigte("/")}>
               <XIcon size={20} weight="bold" />
             </Button>
-
+          </div>
+          <div className="flex items-center gap-3">
             <Slider
               value={[wpm]}
               min={MIN_WPM}
@@ -59,38 +55,41 @@ export default function ControlBar({
               {wpm} wpm
             </span>
           </div>
-
-          <Button
-            variant={"secondary"}
-            size={"icon"}
-            tooltip="Start"
-            tooltipSide="top"
-            onClick={onToggleRunning}
-          >
-            {running ? <PauseIcon weight="fill" size={20} /> : <PlayIcon weight="fill" size={20} />}
-          </Button>
-
-          <Button
-            variant={"secondary"}
-            size={"icon"}
-            tooltip="Restart"
-            tooltipSide="top"
-            onClick={onReset}
-          >
-            <ArrowCounterClockwiseIcon weight="bold" size={20} />
-          </Button>
-
-          {onQuiz && (
+          <div className="flex gap-4">
             <Button
               variant={"secondary"}
               size={"icon"}
-              tooltip="Q&A"
+              tooltip="Start"
               tooltipSide="top"
-              onClick={onQuiz}
+              onClick={onToggleRunning}
             >
-              <SparkleIcon weight="fill" size={20} />
+              {running ? (
+                <PauseIcon weight="fill" size={20} />
+              ) : (
+                <PlayIcon weight="fill" size={20} />
+              )}
             </Button>
-          )}
+            <Button
+              variant={"secondary"}
+              size={"icon"}
+              tooltip="Restart"
+              tooltipSide="top"
+              onClick={onReset}
+            >
+              <ArrowCounterClockwiseIcon weight="bold" size={20} />
+            </Button>
+            {onQuiz && (
+              <Button
+                variant={"secondary"}
+                size={"icon"}
+                tooltip="Q&A"
+                tooltipSide="top"
+                onClick={onQuiz}
+              >
+                <SparkleIcon weight="fill" size={20} />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
