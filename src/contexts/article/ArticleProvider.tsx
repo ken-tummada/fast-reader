@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
 import type { ReactNode } from "react";
 
-import { ArticleContext } from "@/contexts/articleContextValue";
+import { ArticleContext } from "@/contexts/article/ArticleContext";
 import { sampleText } from "@/utils/sampleText";
 
-export function ArticleProvider({ children }: { children: ReactNode }) {
+export default function ArticleProvider({ children }: { children: ReactNode }) {
   const [paragraphs, setParagraphsState] = useState<string[]>(sampleText);
   const [title, setTitle] = useState("Sample Text");
 
@@ -19,6 +19,8 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <ArticleContext value={{ paragraphs, title, setParagraphs, clear }}>{children}</ArticleContext>
+    <ArticleContext.Provider value={{ paragraphs, title, setParagraphs, clear }}>
+      {children}
+    </ArticleContext.Provider>
   );
 }

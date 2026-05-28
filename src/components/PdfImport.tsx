@@ -3,7 +3,7 @@ import type { ChangeEvent, DragEvent } from "react";
 import { useNavigate } from "react-router";
 import { FilePdfIcon, SpinnerGapIcon } from "@phosphor-icons/react";
 
-import { useArticle } from "@/hooks/useArticle";
+import { useArticle } from "@/contexts/article/useArticle";
 import { extractPdfText } from "@/utils/extractPdf";
 
 type Status = "idle" | "loading" | "error";

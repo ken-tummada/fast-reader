@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import "./index.css";
 
 import Layout from "@/components/Layout";
-import { ArticleProvider } from "@/contexts/ArticleContext";
+import ArticleProvider from "@/contexts/article/ArticleProvider";
 import IndexPage from "@/pages/IndexPage";
 import QAPage from "@/pages/QAPage";
 import ReadPage from "@/pages/ReadPage";

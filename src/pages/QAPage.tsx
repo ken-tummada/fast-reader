@@ -8,7 +8,7 @@ import {
   ArrowCounterClockwiseIcon,
 } from "@phosphor-icons/react";
 
-import { useArticle } from "@/hooks/useArticle";
+import { useArticle } from "@/contexts/article/useArticle";
 import { generateQuestions } from "@/utils/generateQuestions";
 import type { Question } from "@/utils/generateQuestions";
 

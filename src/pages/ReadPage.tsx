@@ -5,7 +5,7 @@ import ControlBar from "@/components/ReaderPage/ControlBar";
 import TextDisplay from "@/components/TextDisplay";
 import StatusBar from "@/components/ReaderPage/StatusBar";
 
-import { useArticle } from "@/hooks/useArticle";
+import { useArticle } from "@/contexts/article/useArticle";
 
 const DEFAULT_WPM = 300;
 
